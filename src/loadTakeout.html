@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="./css/style.css" rel="stylesheet" type="text/css" />
+    <title>Memex</title>
+  </head>
+  <body>
+    <div id="importForm">
+      <section class="hero is-primary is-fullheight">
+        <div class="hero-body">
+          <div class="container">
+            <div class="columns">
+              <div class="column has-text-centered">
+                <h1 class="title is-1">Memex</h1>
+                <h2 class="subtitle">
+                  Import data from Google Takeout to analyze and search
+                </h2>
+                <div class="field">
+                  <label for="takeoutInput">
+                    <a class="button is-light">
+                      Select Takeout Folder
+                    </a>
+                  </label>
+                  <input
+                    id="takeoutInput"
+                    class="btn primary outline"
+                    type="file"
+                    name="takeoutRoot"
+                    onchange="checkTakeout();"
+                    webkitdirectory
+                    directory
+                    multiple
+                  />
+                  <input
+                    id="submitBtn"
+                    type="submit"
+                    class="button is-success"
+                    onClick="importTakeout();"
+                    value="Import Data"
+                    disabled
+                  />
+                </div>
+                <h2 class="subtitle" id="rootPath"></h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div id="loading">
+      <section class="hero is-info is-fullheight">
+        <div class="hero-body">
+          <div class="container has-text-centered">
+            <h1 class="title">
+              Please wait while we import your data...
+            </h1>
+            <svg
+              version="1.1"
+              id="L6"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 100 100"
+              enable-background="new 0 0 100 100"
+              xml:space="preserve"
+            >
+              <rect
+                fill="none"
+                stroke="#000"
+                stroke-width="4"
+                x="25"
+                y="25"
+                width="50"
+                height="50"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  dur="2s"
+                  from="0 50 50"
+                  to="360 50 50"
+                  type="rotate"
+                  id="strokeBox"
+                  attributeType="XML"
+                  begin="rectBox.end"
+                />
+              </rect>
+              <rect x="27" y="27" fill="#000" width="46" height="50">
+                <animate
+                  attributeName="height"
+                  dur="2s"
+                  attributeType="XML"
+                  from="50"
+                  to="0"
+                  id="rectBox"
+                  fill="freeze"
+                  begin="0s;strokeBox.end"
+                />
+              </rect>
+            </svg>
+            <h2 class="subtitle">
+              This usually takes around 1-5 minutes
+            </h2>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div id="success">
+      <section class="hero is-success is-fullheight">
+        <div class="hero-body">
+          <div class="container has-text-centered">
+            <h1 class="title">
+              Successfully imported data!
+            </h1>
+            <button class="button is-success is-inverted" onclick="openHome();">
+              Get Started
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <!-- You can also require other files to run in this process -->
+    <script src="./loadTakeout.js"></script>
+  </body>
+</html>

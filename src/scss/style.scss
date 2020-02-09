@@ -1,0 +1,68 @@
+@charset "utf-8";
+
+$primary: #dcf8ef;
+$dark: #231f20;
+
+html,
+body {
+  height: 100%;
+}
+
+.indexColumn {
+  width: 30px;
+}
+
+.itemColumn {
+  word-break: break-all;
+  width: 300px;
+}
+
+.typeColumn {
+  word-break: break-all;
+  width: 100px;
+}
+
+.actionColumn {
+  word-break: break-all;
+  width: 100px;
+}
+
+.dateColumn {
+  word-break: break-all;
+  width: 100px;
+}
+
+#visualization {
+  width: 100%;
+  height: 100%;
+  border: 1px solid lightgray;
+}
+
+.vis-item {
+  background-color: $primary;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+svg {
+  width: 100px;
+  height: 100px;
+  margin: 20px;
+  display: inline-block;
+}
+
+#loading,
+#success,
+#resultTable,
+#timelineSection,
+#summarySection {
+  display: none;
+}
+
+#sidebar {
+  height: 100%;
+}
+
+@import "../../node_modules/bulma/bulma.sass";

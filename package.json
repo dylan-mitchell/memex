@@ -1,0 +1,26 @@
+{
+  "name": "memex",
+  "version": "1.0.0",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "scripts": {
+    "compilestyles": "sass src/scss/style.scss:src/css/style.css",
+    "start": "npm run compilestyles && electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [],
+  "author": "Dylan",
+  "license": "MIT",
+  "dependencies": {
+    "bulma": "^0.8.0",
+    "bulma-dashboard": "^0.3.1",
+    "chart.js": "^2.9.3",
+    "esm": "^3.2.25",
+    "moment": "^2.24.0",
+    "vis-data": "^6.3.5",
+    "vis-timeline": "^7.1.0"
+  },
+  "devDependencies": {
+    "electron": "^8.0.0"
+  }
+}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bulma-dashboard/dist/bulma-dashboard.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../node_modules/vis-timeline/styles/vis-timeline-graph2d.min.css"
+    />
+    <link href="./css/style.css" rel="stylesheet" type="text/css" />
+    <title>Memex</title>
+  </head>
+  <body>
+    <div class="dashboard is-full-height">
+      <!-- left panel -->
+      <div
+        class="dashboard-panel is-medium has-thick-padding has-background-grey-lighter is-hidden-mobile"
+      >
+        <header class="dashboard-panel-header">
+          <div class="has-text-centered">
+            <img src="https://bulma.io/images/bulma-logo.png  " width="50%" />
+          </div>
+        </header>
+
+        <div class="dashboard-panel-content">
+          <aside class="menu has-text-white">
+            <p class="menu-label">
+              General
+            </p>
+            <ul class="menu-list">
+              <li>
+                <a
+                  onclick="activateSearch();"
+                  class="is-active"
+                  id="searchMenuItem"
+                  >Search</a
+                >
+              </li>
+              <li>
+                <a onclick="activateTimeline();" id="timelineMenuItem"
+                  >Timeline</a
+                >
+              </li>
+            </ul>
+            <p class="menu-label">
+              Yearly Summaries
+            </p>
+            <ul id="yearsList" class="menu-list">
+              <li>
+                <a onclick="activateSummarySection('Total');" id="TotalMenuItem"
+                  >Total</a
+                >
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+
+      <!-- main section -->
+      <div id="searchSection" class="dashboard-main is-scrollable">
+        <section class="section has-text-centered">
+          <p class="title is-size-2 is-spaced">
+            Search
+          </p>
+          <div class="field">
+            <div id="searchControl" class="control is-large">
+              <input
+                id="searchField"
+                class="input is-large is-primary"
+                type="text"
+                placeholder="Search your data"
+                onchange="searchItem();"
+              />
+            </div>
+          </div>
+          <hr />
+
+          <section class="content is-medium">
+            <table
+              id="resultTable"
+              class="table is-bordered is-striped is-hoverable is-narrow"
+            >
+              <thead>
+                <tr>
+                  <th class="indexColumn"></th>
+                  <th class="typeColumn">Type</th>
+                  <th class="actionColumn">Action</th>
+                  <th class="itemColumn">Item</th>
+                  <th class="dateColumn">Date</th>
+                </tr>
+              </thead>
+              <tfoot></tfoot>
+              <tbody id="resultList"></tbody>
+            </table>
+          </section>
+        </section>
+      </div>
+
+      <div id="timelineSection" class="dashboard-main is-scrollable">
+        <section class="section has-text-centered">
+          <p class="title is-size-2 is-spaced">
+            Timeline
+          </p>
+
+          <hr />
+
+          <section class="content is-medium has-text-centered">
+            <p id="noResultsTimeline" class="subtitle is-spaced">
+              No results to display. Search then return to this tab.
+            </p>
+            <div id="visualization"></div>
+          </section>
+        </section>
+      </div>
+
+      <div id="summarySection" class="dashboard-main is-scrollable">
+        <section class="section has-text-centered">
+          <p id="summaryTitle" class="title is-size-2 is-spaced">
+            Total
+          </p>
+
+          <hr />
+
+          <section class="content is-medium has-text-left">
+            <div class="tile is-ancestor">
+              <div class="tile is-4 is-vertical is-parent">
+                <div class="tile is-child box">
+                  <p>Total Data Points</p>
+                  <p class="title">
+                    1235
+                  </p>
+                </div>
+                <div class="tile is-child box">
+                  <p>Most Common Item</p>
+                  <p class="title">
+                    https://github.com
+                  </p>
+                </div>
+                <div class="tile is-child box">
+                  <p>Youtube Videos Watched</p>
+                  <p class="title">
+                    53
+                  </p>
+                </div>
+              </div>
+              <div class="tile is-parent">
+                <div class="tile is-child box">
+                  <p class="title"></p>
+                  <canvas id="yearChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+      </div>
+    </div>
+    <!-- You can also require other files to run in this process -->
+    <script src="../node_modules/chart.js/dist/Chart.js"></script>
+    <script src="./home.js"></script>
+  </body>
+</html>
