@@ -17,8 +17,6 @@ var results;
 
 ipcRenderer.send("getYears", "");
 
-// ipcRenderer.send("getCount", "total");
-
 ipcRenderer.on("getCount-reply", (event, count, type) => {
   console.log(type);
   var countEl = document.getElementById(type + "Count");
@@ -118,7 +116,7 @@ function clearSections() {
 function clearMenuItems() {
   menuItems.forEach(item => {
     var secMenu = document.getElementById(item + "MenuItem");
-    secMenu.classList.remove("is-active");
+    secMenu.classList.remove("active-menu");
   });
 }
 
@@ -129,7 +127,7 @@ function activateSearch() {
   search.style.display = "block";
 
   var searchMenu = document.getElementById("searchMenuItem");
-  searchMenu.classList.add("is-active");
+  searchMenu.classList.add("active-menu");
 }
 
 function activateTimeline() {
@@ -139,11 +137,14 @@ function activateTimeline() {
   timeline.style.display = "block";
 
   var timelineMenu = document.getElementById("timelineMenuItem");
-  timelineMenu.classList.add("is-active");
+  timelineMenu.classList.add("active-menu");
 
-  var noResults = document.getElementById("oResultsTimeline");
+  var noResults = document.getElementById("noResultsTimeline");
 
-  if (results.length == 0) {
+  const container = document.getElementById("visualization");
+  container.innerHTML = "";
+
+  if (results.length !== 0) {
     ipcRenderer.send("getTimeline", results);
     noResults.style.display = "none";
   } else {
@@ -158,15 +159,85 @@ function activateSummarySection(year) {
   summary.style.display = "block";
 
   var summaryMenu = document.getElementById(year + "MenuItem");
-  summaryMenu.classList.add("is-active");
+  summaryMenu.classList.add("active-menu");
 
   var summaryTitle = document.getElementById("summaryTitle");
   summaryTitle.innerText = year;
 
-  generateYearChart();
+  ipcRenderer.send("getYearlySummary", year);
 }
 
-function generateYearChart() {
+ipcRenderer.on("getYearlySummary-reply", (event, summary, type) => {
+  console.log(summary);
+
+  var totalPoints = document.getElementById("totalPoints");
+  totalPoints.innerText = summary.total;
+
+  var mostCommon = document.getElementById("mostCommon");
+  mostCommon.innerText = summary.mostcommon[0].name;
+
+  var youtubeCount = document.getElementById("youtubeCount");
+  youtubeCount.innerText = summary.youtubetotal;
+
+  var commonList = document.getElementById("commonList");
+  commonList.innerHTML = "";
+  var count = 1;
+  summary.mostcommon.forEach(item => {
+    var row = document.createElement("tr");
+    var th = document.createElement("th");
+    th.innerText = count;
+    th.classList.add("indexColumn");
+    var itemEl = document.createElement("td");
+    itemEl.innerText = item.name;
+    itemEl.classList.add("itemCommonColumn");
+    var freqEl = document.createElement("td");
+    freqEl.innerText = item.count;
+    freqEl.classList.add("itemFreqColumn");
+
+    row.appendChild(th);
+    row.appendChild(itemEl);
+    row.appendChild(freqEl);
+
+    commonList.appendChild(row);
+
+    count++;
+  });
+
+  var commonYoutubList = document.getElementById("commonYoutubeList");
+  commonYoutubeList.innerHTML = "";
+  var count = 1;
+  summary.channelcommon.forEach(item => {
+    var row = document.createElement("tr");
+    var th = document.createElement("th");
+    th.innerText = count;
+    th.classList.add("indexColumn");
+    var itemEl = document.createElement("td");
+    itemEl.innerText = item.name;
+    itemEl.classList.add("itemCommonColumn");
+    var freqEl = document.createElement("td");
+    freqEl.innerText = item.count;
+    freqEl.classList.add("itemFreqColumn");
+
+    row.appendChild(th);
+    row.appendChild(itemEl);
+    row.appendChild(freqEl);
+
+    commonYoutubeList.appendChild(row);
+
+    count++;
+  });
+
+  generateYearChart(summary);
+});
+
+function generateYearChart(summary) {
+  months = [];
+  sums = [];
+  summary.monthly.forEach(month => {
+    months.push(month.name);
+    sums.push(month.total);
+  });
+
   var ctx = document.getElementById("yearChart").getContext("2d");
   var chart = new Chart(ctx, {
     // The type of chart we want to create
@@ -174,26 +245,13 @@ function generateYearChart() {
 
     // The data for our dataset
     data: {
-      labels: [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
+      labels: months,
       datasets: [
         {
-          label: "My First dataset",
-          backgroundColor: "rgb(255, 99, 132)",
-          borderColor: "rgb(255, 99, 132)",
-          data: [0, 10, 5, 2, 20, 30, 45]
+          label: "Data Points",
+          borderColor: "#73897B",
+          backgroundColor: "#9DC3A9",
+          data: sums
         }
       ]
     },
@@ -218,7 +276,7 @@ ipcRenderer.on("getTimeline-reply", (event, dataset) => {
     type: "box",
     cluster: {
       showStipes: true,
-      maxItems: 5
+      maxItems: 1
     }
   };
 

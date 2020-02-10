@@ -119,6 +119,21 @@ func importTakeout(root string) error {
 	return nil
 }
 
+func getSummary(year int) (*ParseTakeout.YearlySummary, error) {
+	db, err := ParseTakeout.OpenDB("./takeout.db")
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	summary, err := ParseTakeout.GetSummaryofYear(db, year)
+	if err != nil {
+		return nil, err
+	}
+
+	return summary, nil
+}
+
 func constructResponse(payload interface{}) ([]byte, error) {
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
@@ -206,6 +221,25 @@ func handleMessage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		responseJSON, err := constructResponse(results)
+		if err != nil {
+			http.Error(w, "", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+
+		w.Write(responseJSON)
+	case "getYearlySummary":
+		year := message.Payload
+		yearInt, _ := strconv.Atoi(year)
+
+		summary, err := getSummary(yearInt)
+		if err != nil {
+			http.Error(w, "", http.StatusInternalServerError)
+			return
+		}
+
+		responseJSON, err := constructResponse(*summary)
 		if err != nil {
 			http.Error(w, "", http.StatusInternalServerError)
 			return

@@ -36,6 +36,20 @@ ipcMain.on("getYears", (event, arg) => {
   req.end();
 });
 
+ipcMain.on("getYearlySummary", (event, arg) => {
+  var message = {
+    type: "getYearlySummary",
+    payload: arg.toString()
+  };
+  messageStr = JSON.stringify(message);
+
+  console.log(messageStr);
+
+  req = createRequest(event, "getYearlySummary-reply", "");
+  req.write(messageStr);
+  req.end();
+});
+
 ipcMain.on("importTakeout", (event, arg) => {
   var message = {
     type: "importTakeout",

@@ -15,28 +15,31 @@
     <link href="./css/style.css" rel="stylesheet" type="text/css" />
     <title>Memex</title>
   </head>
-  <body>
+  <body class="has-background-primary">
     <div class="dashboard is-full-height">
       <!-- left panel -->
       <div
-        class="dashboard-panel is-medium has-thick-padding has-background-grey-lighter is-hidden-mobile"
+        class="dashboard-panel is-medium has-thick-padding has-background-grey is-hidden-mobile"
       >
         <header class="dashboard-panel-header">
           <div class="has-text-centered">
-            <img src="https://bulma.io/images/bulma-logo.png  " width="50%" />
+            <h1 class="title is-1 has-text-dark">
+              Memex
+            </h1>
+            <img src="../icons/memex.svg" width="25%" />
           </div>
         </header>
 
         <div class="dashboard-panel-content">
           <aside class="menu has-text-white">
-            <p class="menu-label">
+            <p class="menu-label has-text-dark">
               General
             </p>
             <ul class="menu-list">
               <li>
                 <a
                   onclick="activateSearch();"
-                  class="is-active"
+                  class="active-menu"
                   id="searchMenuItem"
                   >Search</a
                 >
@@ -47,7 +50,7 @@
                 >
               </li>
             </ul>
-            <p class="menu-label">
+            <p class="menu-label has-text-dark">
               Yearly Summaries
             </p>
             <ul id="yearsList" class="menu-list">
@@ -63,8 +66,8 @@
 
       <!-- main section -->
       <div id="searchSection" class="dashboard-main is-scrollable">
-        <section class="section has-text-centered">
-          <p class="title is-size-2 is-spaced">
+        <section class="section has-text-centered has-background-primary">
+          <p class="title is-1 is-spaced has-text-dark">
             Search
           </p>
           <div class="field">
@@ -80,7 +83,7 @@
           </div>
           <hr />
 
-          <section class="content is-medium">
+          <section class="content is-medium has-background-primary">
             <table
               id="resultTable"
               class="table is-bordered is-striped is-hoverable is-narrow"
@@ -103,7 +106,7 @@
 
       <div id="timelineSection" class="dashboard-main is-scrollable">
         <section class="section has-text-centered">
-          <p class="title is-size-2 is-spaced">
+          <p class="title is-size-2 is-spaced has-text-dark">
             Timeline
           </p>
 
@@ -119,39 +122,81 @@
       </div>
 
       <div id="summarySection" class="dashboard-main is-scrollable">
-        <section class="section has-text-centered">
-          <p id="summaryTitle" class="title is-size-2 is-spaced">
+        <section class="section has-text-centered has-background-primary">
+          <p id="summaryTitle" class="title is-1 is-spaced has-text-dark">
             Total
           </p>
 
           <hr />
 
-          <section class="content is-medium has-text-left">
+          <section
+            class="content is-medium has-text-left has-background-primary"
+          >
             <div class="tile is-ancestor">
               <div class="tile is-4 is-vertical is-parent">
                 <div class="tile is-child box">
                   <p>Total Data Points</p>
-                  <p class="title">
+                  <p id="totalPoints" class="title">
                     1235
                   </p>
                 </div>
                 <div class="tile is-child box">
                   <p>Most Common Item</p>
-                  <p class="title">
+                  <p id="mostCommon" class="title">
                     https://github.com
                   </p>
                 </div>
                 <div class="tile is-child box">
                   <p>Youtube Videos Watched</p>
-                  <p class="title">
+                  <p id="youtubeCount" class="title">
                     53
                   </p>
                 </div>
               </div>
               <div class="tile is-parent">
                 <div class="tile is-child box">
-                  <p class="title"></p>
+                  <p class="title">Data Points</p>
                   <canvas id="yearChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="tile is-ancestor">
+              <div class="tile is-6 is-vertical is-parent">
+                <div class="tile is-child box">
+                  <p class="title">Most Common Items</p>
+                  <table
+                    id="mostCommonTable"
+                    class="table is-bordered is-striped is-hoverable is-narrow"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="indexColumn"></th>
+                        <th class="itemCommonColumn">Item</th>
+                        <th class="itemFreqColumn">Count</th>
+                      </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody id="commonList"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="tile is-parent">
+                <div class="tile is-child box">
+                  <p class="title">Most Common Youtube Channels</p>
+                  <table
+                    id="commonYoutubeTable"
+                    class="table is-bordered is-striped is-hoverable is-narrow"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="indexColumn"></th>
+                        <th class="itemCommonColumn">Channel</th>
+                        <th class="itemFreqColumn">Count</th>
+                      </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody id="commonYoutubeList"></tbody>
+                  </table>
                 </div>
               </div>
             </div>

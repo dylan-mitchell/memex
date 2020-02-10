@@ -1,7 +1,11 @@
 @charset "utf-8";
 
-$primary: #dcf8ef;
-$dark: #231f20;
+$primary: #9dc3a9;
+$dark: #224c31;
+$grey: #b9c7c5;
+$active: #9dc3a9;
+
+// #69FF97, #00E4FF
 
 html,
 body {
@@ -15,6 +19,16 @@ body {
 .itemColumn {
   word-break: break-all;
   width: 300px;
+}
+
+.itemCommonColumn {
+  word-break: break-all;
+  width: 100px;
+}
+
+.itemFreqColumn {
+  word-break: break-all;
+  width: 30px;
 }
 
 .typeColumn {
@@ -36,10 +50,12 @@ body {
   width: 100%;
   height: 100%;
   border: 1px solid lightgray;
+  background-color: $grey;
 }
 
 .vis-item {
   background-color: $primary;
+  border-color: $dark;
 }
 
 input[type="file"] {
@@ -61,8 +77,8 @@ svg {
   display: none;
 }
 
-#sidebar {
-  height: 100%;
+.active-menu {
+  background-color: $active;
 }
 
 @import "../../node_modules/bulma/bulma.sass";
