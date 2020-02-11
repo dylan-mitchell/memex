@@ -49,6 +49,9 @@
                   >Timeline</a
                 >
               </li>
+              <li>
+                <a onclick="activateAbout();" id="aboutMenuItem">About</a>
+              </li>
             </ul>
             <p class="menu-label has-text-dark">
               Yearly Summaries
@@ -117,6 +120,88 @@
               No results to display. Search then return to this tab.
             </p>
             <div id="visualization"></div>
+          </section>
+        </section>
+      </div>
+
+      <div id="aboutSection" class="dashboard-main is-scrollable">
+        <section class="section has-text-centered">
+          <p class="title is-size-2 is-spaced has-text-dark">
+            About
+          </p>
+          <a onclick="openLink('https://github.com/dylan-mitchell/memex')">
+            <img
+              src="../icons/github.png"
+              alt="https://github.com/dylan-mitchell/memex"
+              height="64"
+              width="64"
+            />
+          </a>
+          <hr />
+
+          <section class="content is-medium has-text-left">
+            <p class="subtitle is-spaced">
+              A memex is a conceptual data storage and retrieval system outlined
+              by Vannevar Bush. Although this project does not live up to this
+              initial concept, it can still be used as a tool to search and
+              analyze your digital data. Currently, the project only uses data
+              from parts of Google Takeout. I would like to extend it to provide
+              more insights from Google Takeout, as well as insights on data
+              from other digital services.
+            </p>
+            <p class="subtitle is-spaced">
+              Memex does not send your data to off-device locations. Everything
+              is processed and handled on your device.
+            </p>
+            <p class="subtitle is-spaced">
+              The current files that are parsed from Google Takeout are:
+            </p>
+            <ul class="menu-list">
+              <li>
+                My Activity/Chrome/MyActivity.html
+              </li>
+              <li>
+                My Activity/Search/MyActivity.html
+              </li>
+              <li>
+                My Activity/Assistant/MyActivity.html
+              </li>
+              <li>
+                My Activity/Android/MyActivity.html
+              </li>
+              <li>
+                My Activity/Developers/MyActivity.html
+              </li>
+              <li>
+                My Activity/Ads/MyActivity.html
+              </li>
+              <li>
+                My Activity/News/MyActivity.html
+              </li>
+              <li>
+                My Activity/Podcasts/MyActivity.html
+              </li>
+              <li>
+                My Activity/Youtube/MyActivity.html
+              </li>
+              <li>
+                Youtube/history/search-history.html
+              </li>
+              <li>
+                Youtube/history/watch-history.html
+              </li>
+            </ul>
+            <section class="has-text-centered">
+              <p class="subtitle is-spaced">
+                Icons created with
+                <a
+                  class="has-text-light"
+                  onclick="openLink('https://www.iconshock.com/svg-icons/')"
+                  >Gradientify</a
+                >
+                by Iconshock
+              </p>
+            </section>
           </section>
         </section>
       </div>

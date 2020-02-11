@@ -5,11 +5,8 @@ $dark: #224c31;
 $grey: #b9c7c5;
 $active: #9dc3a9;
 
-// #69FF97, #00E4FF
-
-html,
-body {
-  height: 100%;
+html {
+  scroll-behavior: smooth;
 }
 
 .indexColumn {
@@ -73,7 +70,8 @@ svg {
 #success,
 #resultTable,
 #timelineSection,
-#summarySection {
+#summarySection,
+#aboutSection {
   display: none;
 }
 

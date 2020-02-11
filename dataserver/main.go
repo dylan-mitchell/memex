@@ -134,6 +134,21 @@ func getSummary(year int) (*ParseTakeout.YearlySummary, error) {
 	return summary, nil
 }
 
+func getSummaryTotal() (*ParseTakeout.TotalSummary, error) {
+	db, err := ParseTakeout.OpenDB("./takeout.db")
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	summary, err := ParseTakeout.GetTotalSummary(db)
+	if err != nil {
+		return nil, err
+	}
+
+	return summary, nil
+}
+
 func constructResponse(payload interface{}) ([]byte, error) {
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
@@ -230,19 +245,33 @@ func handleMessage(w http.ResponseWriter, r *http.Request) {
 
 		w.Write(responseJSON)
 	case "getYearlySummary":
-		year := message.Payload
-		yearInt, _ := strconv.Atoi(year)
+		var responseJSON []byte
 
-		summary, err := getSummary(yearInt)
-		if err != nil {
-			http.Error(w, "", http.StatusInternalServerError)
-			return
-		}
+		if message.Payload == "Total" {
+			summary, err := getSummaryTotal()
+			if err != nil {
+				http.Error(w, "", http.StatusInternalServerError)
+				return
+			}
+			responseJSON, err = constructResponse(*summary)
+			if err != nil {
+				http.Error(w, "", http.StatusInternalServerError)
+				return
+			}
+		} else {
+			year := message.Payload
+			yearInt, _ := strconv.Atoi(year)
 
-		responseJSON, err := constructResponse(*summary)
-		if err != nil {
-			http.Error(w, "", http.StatusInternalServerError)
-			return
+			summary, err := getSummary(yearInt)
+			if err != nil {
+				http.Error(w, "", http.StatusInternalServerError)
+				return
+			}
+			responseJSON, err = constructResponse(*summary)
+			if err != nil {
+				http.Error(w, "", http.StatusInternalServerError)
+				return
+			}
 		}
 
 		w.Header().Set("Content-Type", "application/json")

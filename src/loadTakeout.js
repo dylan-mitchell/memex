@@ -34,3 +34,7 @@ ipcRenderer.on("importTakeout-reply", (event, response, type) => {
   loading.style.display = "none";
   success.style.display = "block";
 });
+
+function openLink(link) {
+  ipcRenderer.send("openLink", link);
+}

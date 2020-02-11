@@ -1,6 +1,6 @@
 // Modules to control application life and create native browser window
 require = require("esm")(module);
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 var fs = require("fs");
 http = require("http");
@@ -77,6 +77,10 @@ ipcMain.on("searchItems", (event, arg) => {
 
 ipcMain.on("openHome", (event, arg) => {
   mainWindow.loadFile(path.join(__dirname, "src", "home.html"));
+});
+
+ipcMain.on("openLink", (event, arg) => {
+  shell.openExternal(arg);
 });
 // *************
 

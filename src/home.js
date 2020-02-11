@@ -10,8 +10,8 @@ const { ipcRenderer } = window.ipcRenderer;
 const visData = require("vis-data");
 const visTimeline = require("vis-timeline/peer");
 
-var menuItems = ["timeline", "search", "Total"];
-var sections = ["timeline", "search", "summary"];
+var menuItems = ["timeline", "search", "Total", "about"];
+var sections = ["timeline", "search", "summary", "about"];
 
 var results;
 
@@ -130,6 +130,16 @@ function activateSearch() {
   searchMenu.classList.add("active-menu");
 }
 
+function activateAbout() {
+  clearSections();
+  clearMenuItems();
+  var about = document.getElementById("aboutSection");
+  about.style.display = "block";
+
+  var aboutMenu = document.getElementById("aboutMenuItem");
+  aboutMenu.classList.add("active-menu");
+}
+
 function activateTimeline() {
   clearSections();
   clearMenuItems();
@@ -231,12 +241,19 @@ ipcRenderer.on("getYearlySummary-reply", (event, summary, type) => {
 });
 
 function generateYearChart(summary) {
-  months = [];
+  xVals = [];
   sums = [];
-  summary.monthly.forEach(month => {
-    months.push(month.name);
-    sums.push(month.total);
-  });
+  if (typeof summary.yearly !== "undefined") {
+    summary.yearly.forEach(year => {
+      xVals.push(year.year);
+      sums.push(year.total);
+    });
+  } else {
+    summary.monthly.forEach(month => {
+      xVals.push(month.name);
+      sums.push(month.total);
+    });
+  }
 
   var ctx = document.getElementById("yearChart").getContext("2d");
   var chart = new Chart(ctx, {
@@ -245,7 +262,7 @@ function generateYearChart(summary) {
 
     // The data for our dataset
     data: {
-      labels: months,
+      labels: xVals,
       datasets: [
         {
           label: "Data Points",
@@ -283,3 +300,7 @@ ipcRenderer.on("getTimeline-reply", (event, dataset) => {
   // Create a Timeline
   const timeline = new visTimeline.Timeline(container, items, options);
 });
+
+function openLink(link) {
+  ipcRenderer.send("openLink", link);
+}
