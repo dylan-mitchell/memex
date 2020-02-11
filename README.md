@@ -7,7 +7,7 @@ from other digital services.
 
 Memex does not send your data to off-device locations. Everything is processed and handled on your device.
 
-[Download Google Takeout data.](https://takeout.google.com/?hl=en)
+[Download Google Takeout data.](https://takeout.google.com/settings/takeout)
 
 When downloading your data export as the largest download size (50 GB) as this keeps your data from being divided.
 
@@ -25,3 +25,13 @@ I am working to use electron-builder to create desktop builds, but until then.
 2. `npm install`
 3. Run the dataserver `cd ./dataserver && ./dataserver` or `cd ./dataserver && go run main.go`
 4. `npm start`
+
+## Screenshots
+
+![Import Screen](./screenshots/import.png)
+
+![Search Screen](./screenshots/search.png)
+
+![Timeline Screen](./screenshots/timeline.png)
+
+![Summary Screen](./screenshots/summary.png)
