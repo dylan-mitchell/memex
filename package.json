@@ -1,14 +1,18 @@
 {
   "name": "memex",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Import data from Google Takeout to search and analyze",
   "main": "main.js",
   "scripts": {
     "compilestyles": "sass src/scss/style.scss:src/css/style.css",
     "start": "npm run compilestyles && electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [],
+  "repository": "https://github.com/dylan-mitchell/memex",
+  "keywords": [
+    "Memex",
+    "Google",
+    "Takeout"
+  ],
   "author": "Dylan",
   "license": "MIT",
   "dependencies": {
