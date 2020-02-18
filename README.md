@@ -23,8 +23,8 @@ I am working to use electron-builder to create desktop builds, but until then.
 
 1. Clone the repo
 2. `npm install`
-3. Run the dataserver `cd ./dataserver && ./dataserver` or `cd ./dataserver && go run main.go`
-4. `npm start`
+3. Build the dataserver `cd ./dataserver && go build`
+4. `npm start` in project root
 
 ## Screenshots
 

@@ -4,6 +4,25 @@ const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 var fs = require("fs");
 http = require("http");
+let spawn = require("child_process").spawn;
+
+let server = spawn("./dataserver/dataserver", []);
+
+server.stdout.on("data", data => {
+  // Handle data...
+  console.log("Got data");
+  console.log(data.toString());
+});
+
+server.stderr.on("data", err => {
+  // Handle error...
+  console.log(err.toString());
+});
+
+server.on("exit", code => {
+  // Handle exit
+  console.log(code.toString());
+});
 
 var mainWindow;
 

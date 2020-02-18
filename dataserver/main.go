@@ -26,13 +26,15 @@ var filesToParse = []string{
 	"YouTube/history/watch-history.html",
 }
 
+const dbLocation = "./dataserver/takeout.db"
+
 type Message struct {
 	Type    string `json:"type"`
 	Payload string `json:"payload"`
 }
 
 func getTotalItems(year string) (int, error) {
-	db, err := ParseTakeout.OpenDB("./takeout.db")
+	db, err := ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
 		return 0, err
 	}
@@ -60,7 +62,7 @@ func getTotalItems(year string) (int, error) {
 }
 
 func getYears() ([]int, error) {
-	db, err := ParseTakeout.OpenDB("./takeout.db")
+	db, err := ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +77,7 @@ func getYears() ([]int, error) {
 }
 
 func searchItems(searchString string) ([]ParseTakeout.Result, error) {
-	db, err := ParseTakeout.OpenDB("./takeout.db")
+	db, err := ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +94,7 @@ func searchItems(searchString string) ([]ParseTakeout.Result, error) {
 }
 
 func importTakeout(root string) error {
-	db, err := ParseTakeout.OpenDB("./takeout.db")
+	db, err := ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
 		return err
 	}
@@ -120,7 +122,7 @@ func importTakeout(root string) error {
 }
 
 func getSummary(year int) (*ParseTakeout.YearlySummary, error) {
-	db, err := ParseTakeout.OpenDB("./takeout.db")
+	db, err := ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +137,7 @@ func getSummary(year int) (*ParseTakeout.YearlySummary, error) {
 }
 
 func getSummaryTotal() (*ParseTakeout.TotalSummary, error) {
-	db, err := ParseTakeout.OpenDB("./takeout.db")
+	db, err := ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
 		return nil, err
 	}
@@ -281,6 +283,8 @@ func handleMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	log.Println("Running dataserver")
 
 	http.HandleFunc("/", handleMessage)
 
