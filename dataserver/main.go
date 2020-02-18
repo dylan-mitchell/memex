@@ -21,9 +21,9 @@ var filesToParse = []string{
 	"My Activity/Ads/MyActivity.html",
 	"My Activity/News/MyActivity.html",
 	"My Activity/Podcasts/MyActivity.html",
-	"My Activity/Youtube/MyActivity.html",
-	"Youtube/history/search-history.html",
-	"Youtube/history/watch-history.html",
+	"My Activity/YouTube/MyActivity.html",
+	"YouTube/history/search-history.html",
+	"YouTube/history/watch-history.html",
 }
 
 type Message struct {
@@ -185,7 +185,7 @@ func handleMessage(w http.ResponseWriter, r *http.Request) {
 	case "importTakeout":
 		err := importTakeout(message.Payload)
 		if err != nil {
-			log.Println("Unable to import takeout data")
+			log.Println("Unable to import takeout data" + err.Error())
 			http.Error(w, "", http.StatusInternalServerError)
 			return
 		}
