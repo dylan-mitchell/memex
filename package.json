@@ -5,7 +5,14 @@
   "main": "main.js",
   "scripts": {
     "compilestyles": "sass src/scss/style.scss:src/css/style.css",
-    "start": "npm run compilestyles && electron ."
+    "start": "npm run compilestyles && electron .",
+    "pack": "electron-builder --dir",
+    "build-help": "electron-builder --help",
+    "build-mac": "npm run compilestyles && electron-builder --mac",
+    "build-linux": "npm run compilestyles && electron-builder --linux",
+    "build-win": "npm run compilestyles && electron-builder --windows",
+    "build-all": "npm run compilestyles && electron-builder --mac --windows --linux",
+    "publish": "electron-builder --mac --win --linux -p always"
   },
   "repository": "https://github.com/dylan-mitchell/memex",
   "keywords": [
@@ -13,7 +20,7 @@
     "Google",
     "Takeout"
   ],
-  "author": "Dylan",
+  "author": "dylan-mitchell",
   "license": "MIT",
   "dependencies": {
     "bulma": "^0.8.0",
@@ -25,6 +32,61 @@
     "vis-timeline": "^7.1.0"
   },
   "devDependencies": {
-    "electron": "^8.0.0"
+    "electron": "^8.0.0",
+    "electron-builder": "^22.3.2"
+  },
+  "build": {
+    "appId": "com.dylan-mitchell.memex.electron",
+    "directories": {
+      "buildResources": "icons"
+    },
+    "mac": {
+      "icon": "icons/memex.png",
+      "target": [
+        "dmg"
+      ]
+    },
+    "dmg": {
+      "sign": false
+    },
+    "linux": {
+      "maintainer": "dylanjmitchell0@gmail.com",
+      "category": "Utility",
+      "icon": "icons/memex.png",
+      "synopsis": "Import data from Google Takeout to search and analyze",
+      "description": "A memex is a conceptual data storage and retrieval system outlined by Vannevar Bush. Although this project does not live up to this initial concept, it can still be used as a tool to search and analyze your digital data. Currently, the project only uses data from parts of Google Takeout. I would like to extend it to provide more insights from Google Takeout, as well as insights on data from other digital services. Memex does not send your data to off-device locations. Everything is processed and handled on your device.",
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "snap",
+          "arch": [
+            "x64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "pacman",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "win": {
+      "icon": "icons/memex.png"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "dylan-mitchell",
+        "repo": "memex"
+      }
+    ]
   }
 }
