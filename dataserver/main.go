@@ -166,6 +166,9 @@ func constructResponse(payload interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("Finished constructing response")
+
 	return messageJSON, nil
 }
 

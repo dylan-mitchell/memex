@@ -25,6 +25,9 @@ server.on("exit", code => {
 });
 
 var mainWindow;
+// These are stored in memory for faster loading
+var years = []
+var yearlySummarys = []
 
 // IPC *************
 ipcMain.on("getTimeline", (event, arg) => {
@@ -45,28 +48,65 @@ ipcMain.on("getCount", (event, arg) => {
 });
 
 ipcMain.on("getYears", (event, arg) => {
-  var message = {
-    type: "getYears"
-  };
-  messageStr = JSON.stringify(message);
+  //First check if the object is cached, if not ask the dataserver for it
+  var cached = false
+  if (years.length !== 0) {
+    console.log("Using cached data");
+    event.reply("getYears-reply", years, "");
+    cached = true
+  }
 
-  req = createRequest(event, "getYears-reply", "");
-  req.write(messageStr);
-  req.end();
+  // Not in cache so ask dataserver
+  if (!cached) {
+    console.log("Asking dataserver for data");
+    var message = {
+      type: "getYears"
+    };
+    messageStr = JSON.stringify(message);
+
+    req = createRequest(event, "getYears-reply", "");
+    req.write(messageStr);
+    req.end();
+  }
+
 });
 
 ipcMain.on("getYearlySummary", (event, arg) => {
-  var message = {
-    type: "getYearlySummary",
-    payload: arg.toString()
-  };
-  messageStr = JSON.stringify(message);
+  //First check if the object is cached, if not ask the dataserver for it
+  var cached = false
+  yearlySummarys.forEach(yearSum => {
+    if (arg === "Total") {
+      //Check for yearly
+      if (typeof yearSum.yearly !== 'undefined') {
+        console.log("Using cached data");
+        event.reply("getYearlySummary-reply", yearSum, "");
+        cached = true
+      }
+    } else {
+      if (yearSum.year === arg) {
+        console.log("Using cached data");
+        event.reply("getYearlySummary-reply", yearSum, "");
+        cached = true
+      }
+    }
+  });
 
-  console.log(messageStr);
+  // Not in cache so ask dataserver
+  if (!cached) {
+    console.log("Asking dataserver for data");
+    var message = {
+      type: "getYearlySummary",
+      payload: arg.toString()
+    };
+    messageStr = JSON.stringify(message);
 
-  req = createRequest(event, "getYearlySummary-reply", "");
-  req.write(messageStr);
-  req.end();
+    console.log(messageStr);
+
+    req = createRequest(event, "getYearlySummary-reply", "");
+    req.write(messageStr);
+    req.end();
+  }
+
 });
 
 ipcMain.on("importTakeout", (event, arg) => {
@@ -103,6 +143,50 @@ ipcMain.on("openLink", (event, arg) => {
 });
 // *************
 
+function cacheYears() {
+  var message = {
+    type: "getYears"
+  };
+  messageStr = JSON.stringify(message);
+
+  console.log("Caching years");
+  req = createRequestToLoad("years");
+  req.write(messageStr);
+  req.end();
+
+  console.log("Finished caching years");
+
+}
+
+function cacheSummaries() {
+  console.log("Caching Summaries");
+  years.forEach(year => {
+    var message = {
+      type: "getYearlySummary",
+      payload: year
+    };
+    messageStr = JSON.stringify(message);
+
+    console.log(messageStr);
+
+    req = createRequestToLoad("summary");
+    req.write(messageStr);
+    req.end();
+  });
+  var message = {
+    type: "getYearlySummary",
+    payload: "Total"
+  };
+  messageStr = JSON.stringify(message);
+
+  console.log(messageStr);
+
+  req = createRequestToLoad("summary");
+  req.write(messageStr);
+  req.end();
+  console.log("Finished caching Summaries");
+}
+
 function createRequest(event, destination, type) {
   var options = {
     hostname: "localhost",
@@ -123,6 +207,42 @@ function createRequest(event, destination, type) {
       message = JSON.parse(totalBody);
       payload = JSON.parse(message.payload);
       event.reply(destination, payload, type);
+    });
+  });
+  req.on("error", function(e) {
+    console.log("problem with request: " + e.message);
+  });
+
+  return req;
+}
+
+function createRequestToLoad(type) {
+  var options = {
+    hostname: "localhost",
+    port: 40855,
+    path: "/",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  };
+  var totalBody = "";
+  var req = http.request(options, function(res) {
+    res.setEncoding("utf8");
+    res.on("data", function(body) {
+      totalBody = totalBody + body;
+    });
+    res.on("end", () => {
+      message = JSON.parse(totalBody);
+      payload = JSON.parse(message.payload);
+      console.log(payload);
+      if (type === 'years') {
+        //Set global var
+        years = payload;
+        cacheSummaries()
+      } else if (type === 'summary') {
+        yearlySummarys.push(payload)
+      }
     });
   });
   req.on("error", function(e) {
@@ -164,6 +284,7 @@ function createWindow() {
 	mainWindow.setMenu(null);
 
   if (fs.existsSync(path.join(__dirname, "dataserver", "takeout.db"))) {
+    cacheYears()
     mainWindow.loadFile(path.join(__dirname, "src", "home.html"));
   } else {
     mainWindow.loadFile(path.join(__dirname, "src", "loadTakeout.html"));
@@ -183,4 +304,3 @@ app.on("window-all-closed", function() {
 app.on("activate", function() {
 
 });
-

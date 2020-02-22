@@ -5,13 +5,14 @@ $dark: #224c31;
 $grey: #b9c7c5;
 $active: #9dc3a9;
 
+html::-webkit-scrollbar {
+    display: none;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
-::-webkit-scrollbar {
-    display: none;
-}
 
 .indexColumn {
   width: 30px;
