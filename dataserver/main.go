@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"strconv"
@@ -85,9 +86,7 @@ func searchItems(searchString string) ([]ParseTakeout.Result, error) {
 	}
 	defer db.Close()
 
-	// TODO: May want to url encode search string
-
-	results, err := ParseTakeout.SearchItems(db, searchString)
+	results, err := ParseTakeout.SearchItems(db, url.QueryEscape(searchString))
 	if err != nil {
 		return nil, err
 	}
