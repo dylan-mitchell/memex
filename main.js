@@ -1,16 +1,40 @@
 // Modules to control application life and create native browser window
 require = require("esm")(module);
-const { app, BrowserWindow, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, ipcMain, shell, globalShortcut } = require("electron");
 const path = require("path");
 var fs = require("fs");
 http = require("http");
+var os = require('os');
 let spawn = require("child_process").spawn;
 
-let server = spawn("./dataserver/dataserver", []);
+var mainWindow;
+const appData = app.getPath('appData')
+// These are stored in memory for faster loading
+var years = []
+var yearlySummarys = []
+
+
+var os = os.type()
+
+switch (os) {
+  case "Linux":
+    var dbPath = path.join(path.dirname(__dirname), 'memex', 'dataserver' ,'dataserver-Linux')
+    break;
+  case "Darwin":
+    var dbPath = path.join(path.dirname(__dirname), 'memex', 'dataserver' ,'dataserver-Darwin')
+    break;
+  case "Windows_NT":
+    var dbPath = path.join(path.dirname(__dirname), 'memex', 'dataserver' ,'dataserver-Windows')
+    break;
+  default:
+
+}
+console.log(dbPath);
+
+let server = spawn(dbPath, ['-db', path.join(appData, 'takeout.db')]);
 
 server.stdout.on("data", data => {
   // Handle data...
-  console.log("Got data");
   console.log(data.toString());
 });
 
@@ -23,11 +47,6 @@ server.on("exit", code => {
   // Handle exit
   console.log(code.toString());
 });
-
-var mainWindow;
-// These are stored in memory for faster loading
-var years = []
-var yearlySummarys = []
 
 // IPC *************
 ipcMain.on("getTimeline", (event, arg) => {
@@ -51,14 +70,12 @@ ipcMain.on("getYears", (event, arg) => {
   //First check if the object is cached, if not ask the dataserver for it
   var cached = false
   if (years.length !== 0) {
-    console.log("Using cached data");
     event.reply("getYears-reply", years, "");
     cached = true
   }
 
   // Not in cache so ask dataserver
   if (!cached) {
-    console.log("Asking dataserver for data");
     var message = {
       type: "getYears"
     };
@@ -78,13 +95,11 @@ ipcMain.on("getYearlySummary", (event, arg) => {
     if (arg === "Total") {
       //Check for yearly
       if (typeof yearSum.yearly !== 'undefined') {
-        console.log("Using cached data");
         event.reply("getYearlySummary-reply", yearSum, "");
         cached = true
       }
     } else {
       if (yearSum.year === arg) {
-        console.log("Using cached data");
         event.reply("getYearlySummary-reply", yearSum, "");
         cached = true
       }
@@ -93,14 +108,11 @@ ipcMain.on("getYearlySummary", (event, arg) => {
 
   // Not in cache so ask dataserver
   if (!cached) {
-    console.log("Asking dataserver for data");
     var message = {
       type: "getYearlySummary",
       payload: arg.toString()
     };
     messageStr = JSON.stringify(message);
-
-    console.log(messageStr);
 
     req = createRequest(event, "getYearlySummary-reply", "");
     req.write(messageStr);
@@ -135,6 +147,7 @@ ipcMain.on("searchItems", (event, arg) => {
 });
 
 ipcMain.on("openHome", (event, arg) => {
+  cacheYears()
   mainWindow.loadFile(path.join(__dirname, "src", "home.html"));
 });
 
@@ -167,8 +180,6 @@ function cacheSummaries() {
     };
     messageStr = JSON.stringify(message);
 
-    console.log(messageStr);
-
     req = createRequestToLoad("summary");
     req.write(messageStr);
     req.end();
@@ -178,8 +189,6 @@ function cacheSummaries() {
     payload: "Total"
   };
   messageStr = JSON.stringify(message);
-
-  console.log(messageStr);
 
   req = createRequestToLoad("summary");
   req.write(messageStr);
@@ -235,7 +244,6 @@ function createRequestToLoad(type) {
     res.on("end", () => {
       message = JSON.parse(totalBody);
       payload = JSON.parse(message.payload);
-      console.log(payload);
       if (type === 'years') {
         //Set global var
         years = payload;
@@ -283,13 +291,15 @@ function createWindow() {
 
 	mainWindow.setMenu(null);
 
-  if (fs.existsSync(path.join(__dirname, "dataserver", "takeout.db"))) {
+  if (fs.existsSync(path.join(appData, 'takeout.db'))) {
     cacheYears()
     mainWindow.loadFile(path.join(__dirname, "src", "home.html"));
   } else {
     mainWindow.loadFile(path.join(__dirname, "src", "loadTakeout.html"));
   }
 }
+
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

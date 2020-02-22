@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"path"
 	"strconv"
 
@@ -26,7 +28,7 @@ var filesToParse = []string{
 	"YouTube/history/watch-history.html",
 }
 
-const dbLocation = "./dataserver/takeout.db"
+var dbLocation = ""
 
 type Message struct {
 	Type    string `json:"type"`
@@ -93,6 +95,15 @@ func searchItems(searchString string) ([]ParseTakeout.Result, error) {
 	return results, nil
 }
 
+func exists(name string) bool {
+	if _, err := os.Stat(name); err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
+}
+
 func importTakeout(root string) error {
 	db, err := ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
@@ -100,22 +111,23 @@ func importTakeout(root string) error {
 	}
 	defer db.Close()
 	for _, filePath := range filesToParse {
-		results, err := ParseTakeout.ParseHTML(path.Join(root, filePath))
-		if err != nil {
-			return err
-		}
 
-		//Do something with the results
-		for _, result := range results {
-			err := result.Validate()
-			if err == nil {
-				err := ParseTakeout.InsertItem(db, result)
-				if err != nil {
-					fmt.Println(err)
-					fmt.Println(result)
+		if exists(path.Join(root, filePath)) {
+			results, err := ParseTakeout.ParseHTML(path.Join(root, filePath))
+			if err != nil {
+				return err
+			}
+			//Do something with the results
+			for _, result := range results {
+				err := result.Validate()
+				if err == nil {
+					err := ParseTakeout.InsertItem(db, result)
+					if err != nil {
+						fmt.Println(err)
+						fmt.Println(result)
+					}
 				}
 			}
-
 		}
 	}
 	return nil
@@ -190,7 +202,7 @@ func handleMessage(w http.ResponseWriter, r *http.Request) {
 	case "importTakeout":
 		err := importTakeout(message.Payload)
 		if err != nil {
-			log.Println("Unable to import takeout data" + err.Error())
+			log.Println("Unable to import takeout data " + err.Error())
 			http.Error(w, "", http.StatusInternalServerError)
 			return
 		}
@@ -286,6 +298,16 @@ func handleMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	var dbLocationFlag = flag.String("db", "", "Set db location")
+	flag.Parse()
+
+	if *dbLocationFlag == "" {
+		log.Fatal("Please set dbLocation")
+	}
+
+	dbLocation = *dbLocationFlag
+
+	log.Println("DB location: " + dbLocation)
 
 	log.Println("Running dataserver")
 
