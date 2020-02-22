@@ -19,12 +19,14 @@ This project uses ElectronJS and Bulma.io for the frontend, and Golang and SQLit
 
 ## To Use
 
-I am working to use electron-builder to create desktop builds, but until then.
+From source:
 
 1. Clone the repo
 2. `npm install`
-3. Build the dataserver `cd ./dataserver && go build`
-4. `npm start` in project root
+3. `npm start` in project root
+
+Check the Releases for builds. Currently I am unable to build for Mac as I do not own one :( .
+There are `.deb`, `.snap`, `.pacman` for Linux and `.exe` for Windows.
 
 ## Screenshots
 
