@@ -12,6 +12,7 @@
       rel="stylesheet"
       href="../node_modules/vis-timeline/styles/vis-timeline-graph2d.min.css"
     />
+    <script defer src="../node_modules/@fortawesome/fontawesome-free/js/all.js"></script>
     <link href="./css/style.css" rel="stylesheet" type="text/css" />
     <title>Memex</title>
   </head>
@@ -73,8 +74,8 @@
           <p class="title is-1 is-spaced has-text-dark">
             Search
           </p>
-          <div class="field">
-            <div id="searchControl" class="control is-large">
+          <div class="field has-addons">
+            <div id="searchControl" class="control is-large is-expanded">
               <input
                 id="searchField"
                 class="input is-large is-primary"
@@ -82,6 +83,9 @@
                 placeholder="Search your data"
                 onchange="searchItem();"
               />
+            </div>
+            <div class="control">
+              <button onclick="searchItem();" class="button is-large is-dark">Search</button>
             </div>
           </div>
           <hr />
@@ -94,10 +98,30 @@
               <thead>
                 <tr>
                   <th class="indexColumn"></th>
-                  <th class="typeColumn">Type</th>
-                  <th class="actionColumn">Action</th>
-                  <th class="itemColumn">Item</th>
-                  <th class="dateColumn">Date</th>
+                  <th class="typeColumn" onclick="sortByColumn('typeColumn')">
+                    Type
+                    <span class="icon is-small">
+                      <i class="fas fa-sort"></i>
+                    </span>
+                  </th>
+                  <th class="actionColumn" onclick="sortByColumn('actionColumn')">
+                    Action
+                    <span class="icon is-small">
+                      <i class="fas fa-sort"></i>
+                    </span>
+                  </th>
+                  <th class="itemColumn" onclick="sortByColumn('itemColumn')">
+                    Item
+                    <span class="icon is-small">
+                      <i class="fas fa-sort"></i>
+                    </span>
+                  </th>
+                  <th class="dateColumn" onclick="sortByColumn('dateColumn')">
+                    Date
+                    <span class="icon is-small">
+                      <i class="fas fa-sort"></i>
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tfoot></tfoot>

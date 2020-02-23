@@ -178,8 +178,6 @@ func constructResponse(payload interface{}) ([]byte, error) {
 		return nil, err
 	}
 
-	fmt.Println("Finished constructing response")
-
 	return messageJSON, nil
 }
 

@@ -289,7 +289,7 @@ function createWindow() {
     }
   });
 
-	mainWindow.setMenu(null);
+	// mainWindow.setMenu(null);
 
   if (fs.existsSync(path.join(appData, 'takeout.db'))) {
     cacheYears()

@@ -23,6 +23,7 @@
   "author": "dylan-mitchell",
   "license": "MIT",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.1",
     "bulma": "^0.8.0",
     "bulma-dashboard": "^0.3.1",
     "chart.js": "^2.9.3",
@@ -44,7 +45,10 @@
       {
         "from": "dataserver",
         "to": "memex/dataserver",
-        "filter": ["**/dataserver*", "!*.db"]
+        "filter": [
+          "**/dataserver*",
+          "!*.db"
+        ]
       }
     ],
     "mac": {

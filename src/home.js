@@ -36,13 +36,14 @@ function formatDate(date) {
   return [year, month, day].join("-");
 }
 
-ipcRenderer.on("searchItems-reply", (event, items, type) => {
+function populateTable(items) {
   var searchControl = document.getElementById("searchControl");
   searchControl.classList.remove("is-loading");
 
   document.getElementById("resultTable").style.display = "table";
 
   results = items;
+
   var resultList = document.getElementById("resultList");
   resultList.innerHTML = "";
 
@@ -75,6 +76,10 @@ ipcRenderer.on("searchItems-reply", (event, items, type) => {
 
     count++;
   });
+}
+
+ipcRenderer.on("searchItems-reply", (event, items, type) => {
+  populateTable(items);
 });
 
 ipcRenderer.on("getYears-reply", (event, years, type) => {
@@ -303,4 +308,40 @@ ipcRenderer.on("getTimeline-reply", (event, dataset) => {
 
 function openLink(link) {
   ipcRenderer.send("openLink", link);
+}
+
+function sortByColumn(column) {
+  switch (column) {
+    case 'typeColumn':
+      if (results[0].title.toLowerCase() < results[results.length - 1].title.toLowerCase() === true) {
+          results.sort((a, b) => (a.title.toLowerCase() < b.title.toLowerCase()) ? 1 : (a.title.toLowerCase() === b.title.toLowerCase()) ? ((a.unixtime > b.unixtime) ? 1 : -1) : -1 )
+      } else {
+        results.sort((a, b) => (b.title.toLowerCase() < a.title.toLowerCase()) ? 1 : (a.title.toLowerCase() === b.title.toLowerCase()) ? ((a.unixtime > b.unixtime) ? 1 : -1) : -1 )
+      }
+      break;
+    case 'actionColumn':
+      if (results[0].action.toLowerCase() < results[results.length - 1].action.toLowerCase() === true) {
+          results.sort((a, b) => (a.action.toLowerCase() < b.action.toLowerCase()) ? 1 : (a.action.toLowerCase() === b.action.toLowerCase()) ? ((a.unixtime > b.unixtime) ? 1 : -1) : -1 )
+      } else {
+        results.sort((a, b) => (b.action.toLowerCase() < a.action.toLowerCase()) ? 1 : (a.action.toLowerCase() === b.action.toLowerCase()) ? ((a.unixtime > b.unixtime) ? 1 : -1) : -1 )
+      }
+      break;
+    case 'itemColumn':
+      if (results[0].item.toLowerCase() < results[results.length - 1].item.toLowerCase() === true) {
+          results.sort((a, b) => (a.item.toLowerCase() < b.item.toLowerCase()) ? 1 : (a.item.toLowerCase() === b.item.toLowerCase()) ? ((a.unixtime > b.unixtime) ? 1 : -1) : -1 )
+      } else {
+        results.sort((a, b) => (b.item.toLowerCase() < a.item.toLowerCase()) ? 1 : (a.item.toLowerCase() === b.item.toLowerCase()) ? ((a.unixtime > b.unixtime) ? 1 : -1) : -1 )
+      }
+      break;
+    case 'dateColumn':
+      if (results[0].unixtime < results[results.length - 1].unixtime) {
+          results.sort((a, b) => (a.unixtime < b.unixtime) ? 1 : (a.unixtime === b.unixtime) ? ((a.item.toLowerCase() > b.item.toLowerCase()) ? 1 : -1) : -1 )
+      } else {
+        results.sort((a, b) => (b.unixtime < a.unixtime) ? 1 : (a.unixtime === b.unixtime) ? ((a.item.toLowerCase() > b.item.toLowerCase()) ? 1 : -1) : -1 )
+      }
+      break;
+    default:
+
+  }
+  populateTable(results);
 }
