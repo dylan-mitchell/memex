@@ -11,6 +11,7 @@ import (
 	"path"
 	"strconv"
 
+	"github.com/dylan-mitchell/ParseLocation"
 	"github.com/dylan-mitchell/ParseTakeout"
 )
 
@@ -27,6 +28,7 @@ var filesToParse = []string{
 	"My Activity/YouTube/MyActivity.html",
 	"YouTube/history/search-history.html",
 	"YouTube/history/watch-history.html",
+	"Location History/Location History.json",
 }
 
 var dbLocation = ""
@@ -104,7 +106,12 @@ func exists(name string) bool {
 }
 
 func importTakeout(root string) error {
-	db, err := ParseTakeout.OpenDB(dbLocation)
+	db, err := ParseLocation.OpenDB(dbLocation)
+	if err != nil {
+		return err
+	}
+	db.Close()
+	db, err = ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
 		return err
 	}
@@ -112,20 +119,40 @@ func importTakeout(root string) error {
 	for _, filePath := range filesToParse {
 
 		if exists(path.Join(root, filePath)) {
-			results, err := ParseTakeout.ParseHTML(path.Join(root, filePath))
-			if err != nil {
-				return err
-			}
-			//Do something with the results
-			for _, result := range results {
-				err := result.Validate()
-				if err == nil {
-					err := ParseTakeout.InsertItem(db, result)
+			if filePath == "Location History/Location History.json" {
+				data, err := ParseLocation.LoadJSON(path.Join(root, filePath))
+				if err != nil {
+					return err
+				}
+
+				ParseLocation.BeginTransaction(db)
+				for _, loc := range data.Locations {
+					err := ParseLocation.InsertLocation(db, loc)
 					if err != nil {
 						fmt.Println(err)
-						fmt.Println(result)
+						fmt.Println(loc)
 					}
 				}
+				ParseLocation.CommitTransaction(db)
+
+			} else {
+				results, err := ParseTakeout.ParseHTML(path.Join(root, filePath))
+				if err != nil {
+					return err
+				}
+				ParseTakeout.BeginTransaction(db)
+				//Do something with the results
+				for _, result := range results {
+					err := result.Validate()
+					if err == nil {
+						err := ParseTakeout.InsertItem(db, result)
+						if err != nil {
+							fmt.Println(err)
+							fmt.Println(result)
+						}
+					}
+				}
+				ParseTakeout.CommitTransaction(db)
 			}
 		}
 	}
