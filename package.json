@@ -1,6 +1,6 @@
 {
   "name": "memex",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "Import data from Google Takeout to search and analyze",
   "main": "main.js",
   "scripts": {

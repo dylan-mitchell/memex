@@ -19,7 +19,7 @@ var filesToParse = []string{
 	"My Activity/Chrome/MyActivity.html",
 	"My Activity/Search/MyActivity.html",
 	"My Activity/Assistant/MyActivity.html",
-	"My Activity/Android/MyActivity.html",
+	// "My Activity/Android/MyActivity.html",
 	"My Activity/Developers/MyActivity.html",
 	"My Activity/Ads/MyActivity.html",
 	"My Activity/News/MyActivity.html",
@@ -29,6 +29,9 @@ var filesToParse = []string{
 	"YouTube/history/watch-history.html",
 	"Location History/Location History.json",
 }
+
+//Items that shouldn't be added because they are not insightful
+var blackList = []string{"Google Search", "Ads", "Chrome", "a video that has been removed", "Search", "YouTube", "Assistant"}
 
 var dbLocation = ""
 
@@ -104,6 +107,15 @@ func exists(name string) bool {
 	return true
 }
 
+func isBlacklistItem(result ParseTakeout.Result) bool {
+	for _, b := range blackList {
+		if result.Item == b {
+			return true
+		}
+	}
+	return false
+}
+
 func importTakeout(root string) error {
 	db, err := ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
@@ -139,10 +151,12 @@ func importTakeout(root string) error {
 				for _, result := range results {
 					err := result.Validate()
 					if err == nil {
-						err := ParseTakeout.InsertItem(db, result)
-						if err != nil {
-							fmt.Println(err)
-							fmt.Println(result)
+						if !isBlacklistItem(result) {
+							err := ParseTakeout.InsertItem(db, result)
+							if err != nil {
+								fmt.Println(err)
+								fmt.Println(result)
+							}
 						}
 					}
 				}
