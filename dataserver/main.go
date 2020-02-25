@@ -11,7 +11,6 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/dylan-mitchell/ParseLocation"
 	"github.com/dylan-mitchell/ParseTakeout"
 )
 
@@ -106,12 +105,7 @@ func exists(name string) bool {
 }
 
 func importTakeout(root string) error {
-	db, err := ParseLocation.OpenDB(dbLocation)
-	if err != nil {
-		return err
-	}
-	db.Close()
-	db, err = ParseTakeout.OpenDB(dbLocation)
+	db, err := ParseTakeout.OpenDB(dbLocation)
 	if err != nil {
 		return err
 	}
@@ -120,20 +114,20 @@ func importTakeout(root string) error {
 
 		if exists(path.Join(root, filePath)) {
 			if filePath == "Location History/Location History.json" {
-				data, err := ParseLocation.LoadJSON(path.Join(root, filePath))
+				data, err := ParseTakeout.LoadJSON(path.Join(root, filePath))
 				if err != nil {
 					return err
 				}
 
-				ParseLocation.BeginTransaction(db)
+				ParseTakeout.BeginTransaction(db)
 				for _, loc := range data.Locations {
-					err := ParseLocation.InsertLocation(db, loc)
+					err := ParseTakeout.InsertLocation(db, ParseTakeout.FormatInput(loc))
 					if err != nil {
 						fmt.Println(err)
 						fmt.Println(loc)
 					}
 				}
-				ParseLocation.CommitTransaction(db)
+				ParseTakeout.CommitTransaction(db)
 
 			} else {
 				results, err := ParseTakeout.ParseHTML(path.Join(root, filePath))

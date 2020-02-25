@@ -1,19 +1,43 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// No Node.js APIs are available in this process because
-// `nodeIntegration` is turned off. Use `preload.js` to
-// selectively enable features needed in the rendering
-// process.
-
 require = require("esm")(module);
 const { ipcRenderer } = window.ipcRenderer;
 const visData = require("vis-data");
 const visTimeline = require("vis-timeline/peer");
+var L = require('leaflet');
+require('leaflet.heat');
 
 var menuItems = ["timeline", "search", "Total", "about"];
 var sections = ["timeline", "search", "summary", "about"];
 
 var results;
+var map;
+var heat;
+
+map = L.map('mapid').setView([0, 0], 2);
+
+var tiles = L.tileLayer( 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors.',
+}).addTo(map);
+
+function loadHeatMap(summary) {
+
+  if (heat) {
+    map.removeLayer(heat);
+  }
+
+  var heatArr = []
+
+  summary.locationdata.forEach(loc => {
+    heatArr.push([loc.latitude/ 10000000, loc.longitude / 10000000, 1])
+  });
+
+  if (heatArr.length > 0) {
+      map.setView([heatArr[0][0], heatArr[0][1]], 4)
+  } else {
+    map.setView([0, 0], 2)
+  }
+
+  heat = L.heatLayer(heatArr, {radius: 25}).addTo(map);
+}
 
 ipcRenderer.send("getYears", "");
 
@@ -184,7 +208,7 @@ function activateSummarySection(year) {
 
 ipcRenderer.on("getYearlySummary-reply", (event, summary, type) => {
   console.log(summary);
-
+  loadHeatMap(summary);
   var totalPoints = document.getElementById("totalPoints");
   totalPoints.innerText = summary.total;
 
@@ -243,6 +267,7 @@ ipcRenderer.on("getYearlySummary-reply", (event, summary, type) => {
   });
 
   generateYearChart(summary);
+  map.invalidateSize()
 });
 
 function generateYearChart(summary) {

@@ -28,6 +28,8 @@
     "bulma-dashboard": "^0.3.1",
     "chart.js": "^2.9.3",
     "esm": "^3.2.25",
+    "leaflet": "^1.6.0",
+    "leaflet.heat": "github:dylan-mitchell/leaflet.heat",
     "moment": "^2.24.0",
     "vis-data": "^6.3.5",
     "vis-timeline": "^7.1.0"

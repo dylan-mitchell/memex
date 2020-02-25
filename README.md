@@ -37,3 +37,5 @@ There are `.deb`, `.snap`, `.pacman` for Linux and `.exe` for Windows.
 ![Timeline Screen](./screenshots/timeline.png)
 
 ![Summary Screen](./screenshots/summary.png)
+
+![Heat Map Screen](./screenshots/heatmap.png)

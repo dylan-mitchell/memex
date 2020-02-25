@@ -12,6 +12,8 @@
       rel="stylesheet"
       href="../node_modules/vis-timeline/styles/vis-timeline-graph2d.min.css"
     />
+    <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css"/>
+    <script src="../node_modules/leaflet/dist/leaflet.js"></script>
     <script defer src="../node_modules/@fortawesome/fontawesome-free/js/all.js"></script>
     <link href="./css/style.css" rel="stylesheet" type="text/css" />
     <title>Memex</title>
@@ -214,6 +216,9 @@
               <li>
                 Youtube/history/watch-history.html
               </li>
+              <li>
+                Location History/Location History.json
+              </li>
             </ul>
             <section class="has-text-centered">
               <p class="subtitle is-spaced">
@@ -309,6 +314,9 @@
                 </div>
               </div>
             </div>
+
+            <div id="mapid"></div>
+
           </section>
         </section>
       </div>
