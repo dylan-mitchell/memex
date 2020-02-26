@@ -32,6 +32,8 @@ From source:
 Check the Releases for builds. Currently I am unable to build for Mac as I do not own one :( .
 There are `.deb`, `.snap`, `.pacman` for Linux and `.exe` for Windows.
 
+`Note: I have only been able to test the .pacman build`
+
 ## Screenshots
 
 ![Import Screen](./screenshots/import.png)
