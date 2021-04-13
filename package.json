@@ -32,7 +32,7 @@
     "leaflet.heat": "github:dylan-mitchell/leaflet.heat",
     "moment": "^2.24.0",
     "vis-data": "^6.3.5",
-    "vis-timeline": "^7.1.0"
+    "vis-timeline": "^7.4.4"
   },
   "devDependencies": {
     "electron": "^8.2.4",
