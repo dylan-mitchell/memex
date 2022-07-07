@@ -30,7 +30,7 @@
     "esm": "^3.2.25",
     "leaflet": "^1.6.0",
     "leaflet.heat": "github:dylan-mitchell/leaflet.heat",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "vis-data": "^6.3.5",
     "vis-timeline": "^7.1.0"
   },
